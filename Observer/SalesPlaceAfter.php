@@ -72,7 +72,7 @@ class SalesPlaceAfter implements ObserverInterface
                 ];
             }
             $final_json_data= \json_encode($data,true);
-            $this->chronosApi->createOrUpdateOrder($external_id, $final_json_data, $products);
+            // $this->chronosApi->createOrUpdateOrder($external_id, $final_json_data, $products);
         } catch (xception $e) {
             $this->logger->addInfo('Chronos SalesPlaceAfterObserver Main', ["Error"=>$e->getMessage()]);
         }

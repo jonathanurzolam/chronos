@@ -50,7 +50,7 @@ class CustomerSaveAfter implements ObserverInterface
                 'json_data'=>$json_data,
             ];
             $final_json_data= \json_encode($data,true);
-            $this->chronosApi->createOrUpdateCustomer($external_id, $final_json_data);
+            // $this->chronosApi->createOrUpdateCustomer($external_id, $final_json_data);
         } catch (xception $e) {
             $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["Error"=>$e->getMessage()]);
         }  

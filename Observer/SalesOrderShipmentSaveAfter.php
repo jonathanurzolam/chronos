@@ -33,7 +33,7 @@ class SalesOrderShipmentSaveAfter implements ObserverInterface
         try {
             //code...
         } catch (xception $e) {
-            $this->logger->addInfo('Chronos customer save helper', ["Get customer error"=>$e->getMessage()]);
+            $this->logger->addInfo('Chronos SalesOrderShipmentSaveAfter Main', ["Error"=>$e->getMessage()]);
         }
     }
 }

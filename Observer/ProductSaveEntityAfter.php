@@ -54,7 +54,7 @@ class ProductSaveEntityAfter implements ObserverInterface
                 'json_data'=>$json_data,
                 ];
             $final_json_data= \json_encode($data,true);
-            $this->chronosApi->createOrUpdateProduct($external_id, $final_json_data);
+            // $this->chronosApi->createOrUpdateProduct($external_id, $final_json_data);
         } catch (xception $e) {
             $this->logger->addInfo('Chronos ProductSaveEntityAfter Main', ["Error"=>$e->getMessage()]);
         }
