@@ -6,7 +6,7 @@ How to Install
 
 The correct way to do the installation of the extension is through composer, for this use the following commands:
 
-- composer require burst_col/magento-chronos
+- composer require burst_chronos/magento-chronos
 - bin/magento setup:upgrade
 - bin/magento module:status
 - bin/magento c:c
