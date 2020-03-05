@@ -24,11 +24,16 @@ class ChronosApi extends AbstractHelper{
         parent::__construct($context); 
         $this->scopeConfig = $scopeConfig;
         $this->httpClientFactory = $httpClientFactory;
-        
-        $this->chronos_url = $this->scopeConfig->getValue( 
-            'chronos/chronos_credentials/chronos_url', 
+
+        $this->chronos_enabled = $this->scopeConfig->getValue( 
+            'chronos/general/chronos_enabled', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
         );
+        $this->chronos_url   = 'https://chronos.burst.com.co/api/v1/';
+        // $this->chronos_url = $this->scopeConfig->getValue( 
+        //     'chronos/chronos_credentials/chronos_url', 
+        //     \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
+        // );
         $this->chronos_user = $this->scopeConfig->getValue( 
             'chronos/chronos_credentials/chronos_user', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
@@ -36,8 +41,19 @@ class ChronosApi extends AbstractHelper{
         $this->chronos_password = $this->scopeConfig->getValue( 
             'chronos/chronos_credentials/chronos_password', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
-        ); 
-        $this->token = $this->getoken();
+        );
+        if ($this->chronos_enabled) {
+            if ($this->chronos_url !=null && $this->chronos_user != null && $this->chronos_password!=null) {
+                $this->token = $this->getoken();
+                $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["enable yes"=>$this->token]);
+            }
+            else{
+                $this->token = false;
+            }
+        } else{
+            $this->token = false;
+        }
+        // $this->token = $this->getoken();
     }
     /**
      * Function to generate token in Chronos
@@ -60,7 +76,11 @@ class ChronosApi extends AbstractHelper{
             $body = $response->getBody();
             $string = json_decode(json_encode($body),true);
             $token_data=json_decode($string);
-            return $token_data->token;
+            if (property_exists($token_data,'non_field_errors')) {
+                return false;
+            }else{
+                return $token_data->token;
+            }
         } catch (\Zend_Http_Client_Exception $e) {
             $this->logger->addInfo('Chronos Product save helper', ["error"=>$e->getMessage()]);
             return false;

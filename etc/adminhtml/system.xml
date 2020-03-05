@@ -16,9 +16,9 @@
             </group>
             <group id="chronos_credentials" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Connection variables</label>
-                <field id="chronos_url" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <!-- <field id="chronos_url" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>URL</label>
-                </field>
+                </field> -->
                 <field id="chronos_user" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>User</label>
                 </field>

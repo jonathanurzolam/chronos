@@ -30,13 +30,14 @@ class SalesOrderCancelAfter implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        try {
-            $order = $observer->getEvent()->getOrder();
-            $external_id = $order->getId();
-            $result=$this->chronosApi->cancelOrder($external_id);
-        } catch (xception $e) {
-            $this->logger->addInfo('Chronos SalesOrderCancelAfter Main', ["Error"=>$e->getMessage()]);
+        if ($this->chronosApi->token != false) {
+            try {
+                $order = $observer->getEvent()->getOrder();
+                $external_id = $order->getId();
+                $result=$this->chronosApi->cancelOrder($external_id);
+            } catch (xception $e) {
+                $this->logger->addInfo('Chronos SalesOrderCancelAfter Main', ["Error"=>$e->getMessage()]);
+            }
         }
-        
     }
 }

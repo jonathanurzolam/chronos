@@ -30,10 +30,12 @@ class SalesOrderInvoiceSaveAfter implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        try {
-            //code...
-        } catch (xception $e) {
-            $this->logger->addInfo('Chronos SalesOrderInvoiceSaveAfter Main', ["Error"=>$e->getMessage()]);
+        if ($this->chronosApi->token != false) {
+            try {
+                //code...
+            } catch (xception $e) {
+                $this->logger->addInfo('Chronos SalesOrderInvoiceSaveAfter Main', ["Error"=>$e->getMessage()]);
+            }
         }
     }
 }
