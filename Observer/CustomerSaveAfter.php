@@ -23,6 +23,10 @@ class CustomerSaveAfter implements ObserverInterface
         $this->_objectManager = $objectManager;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
+        $this->chronos_enabled_customer_sync = $this->scopeConfig->getValue( 
+            'chronos/chronos_entities/chronos_synchronize_customers', 
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
+        );
     }
     /**
      * customer register event handler
@@ -33,29 +37,33 @@ class CustomerSaveAfter implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         if ($this->chronosApi->token  != false) {
-            try {
-                $event = $observer->getEvent();
-                $customer = $event->getCustomer();
-                $external_id = $customer->getId();
-                $email = $customer->getEmail();
-                $firstname = $customer->getFirstName();
-                $lastname = $customer->getLastName();
-                $company= 1;
-                $source= 1;
-                $json_data =json_encode($customer->getData());
-                $data = [
-                    'external_id'=>$external_id,
-                    'email'=>$email,
-                    'firstname'=>$firstname,
-                    "lastname"=> $lastname,
-                    'company'=>$company,
-                    'source'=>$source,
-                    'json_data'=>$json_data,
-                ];
-                $final_json_data= \json_encode($data,true);
-                // $this->chronosApi->createOrUpdateCustomer($external_id, $final_json_data);
-            } catch (xception $e) {
-                $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["Error"=>$e->getMessage()]);
+            if ($this->chronos_enabled_customer_sync  != false) {
+                try {
+                    $event = $observer->getEvent();
+                    $customer = $event->getCustomer();
+                    $external_id = $customer->getId();
+                    $email = $customer->getEmail();
+                    $firstname = $customer->getFirstName();
+                    $lastname = $customer->getLastName();
+                    $company= 1;
+                    $source= 1;
+                    $json_data =json_encode($customer->getData());
+                    $data = [
+                        'external_id'=>$external_id,
+                        'email'=>$email,
+                        'firstname'=>$firstname,
+                        "lastname"=> $lastname,
+                        'company'=>$company,
+                        'source'=>$source,
+                        'json_data'=>$json_data,
+                    ];
+                    $final_json_data= \json_encode($data,true);
+                    $this->chronosApi->createOrUpdateCustomer($external_id, $final_json_data);
+                } catch (exception $e) {
+                    $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["Error"=>$e->getMessage()]);
+                }
+            }else{
+                $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["Error"=>'Customer sync disabled']);
             }
         }     
     }

@@ -21,6 +21,10 @@ class SalesOrderCancelAfter implements ObserverInterface
         $this->chronosApi = $chronosApi;
         $this->_objectManager = $objectManager;
         $this->logger = $logger;
+        $this->chronos_enabled_order_sync = $this->scopeConfig->getValue( 
+            'chronos/chronos_entities/chronos_synchronize_orders', 
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
+        );
     }
     /**
      * customer register event handler
@@ -31,12 +35,16 @@ class SalesOrderCancelAfter implements ObserverInterface
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
         if ($this->chronosApi->token != false) {
-            try {
-                $order = $observer->getEvent()->getOrder();
-                $external_id = $order->getId();
-                $result=$this->chronosApi->cancelOrder($external_id);
-            } catch (xception $e) {
-                $this->logger->addInfo('Chronos SalesOrderCancelAfter Main', ["Error"=>$e->getMessage()]);
+            if ($this->chronos_enabled_order_sync  != false) {
+                try {
+                    $order = $observer->getEvent()->getOrder();
+                    $external_id = $order->getId();
+                    $result=$this->chronosApi->cancelOrder($external_id);
+                } catch (xception $e) {
+                    $this->logger->addInfo('Chronos SalesOrderCancelAfter Main', ["Error"=>$e->getMessage()]);
+                }
+            }else{
+                $this->logger->addInfo('Chronos SalesOrderCancelAfter Main', ["Error"=>'Order sync disabled']);
             }
         }
     }
