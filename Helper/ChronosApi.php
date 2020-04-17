@@ -45,7 +45,7 @@ class ChronosApi extends AbstractHelper{
         if ($this->chronos_enabled) {
             if ($this->chronos_url !=null && $this->chronos_user != null && $this->chronos_password!=null) {
                 $this->token = $this->getoken();
-                $this->logger->addInfo('Chronos CustomerSaveAfter Main', ["enable yes"=>$this->token]);
+                $this->logger->addInfo('Chronos  Main', ["enable yes"=>'******************************']);
             }
             else{
                 $this->token = false;
@@ -100,6 +100,7 @@ class ChronosApi extends AbstractHelper{
      */
     public function createOrUpdateProduct($product_id, $json_data)
     {
+	$this->logger->addInfo('Chronos Product save helper', ["Status"=>'Start']);
         if ($this->token!= false) {
             $product = $this->getProductById($product_id);
             if (property_exists($product,'detail')) {

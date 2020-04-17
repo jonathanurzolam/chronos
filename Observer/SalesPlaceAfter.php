@@ -16,11 +16,13 @@ class SalesPlaceAfter implements ObserverInterface
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager, 
         \Psr\Log\LoggerInterface $logger,
-        \Burst\Chronos\Helper\ChronosApi $chronosApi
+        \Burst\Chronos\Helper\ChronosApi $chronosApi,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->chronosApi = $chronosApi;
         $this->_objectManager = $objectManager;
         $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
         $this->chronos_enabled_order_sync = $this->scopeConfig->getValue( 
             'chronos/chronos_entities/chronos_synchronize_orders', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE 

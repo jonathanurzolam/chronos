@@ -16,15 +16,18 @@ class ProductSaveEntityAfter implements ObserverInterface
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager, 
         \Psr\Log\LoggerInterface $logger,
-        \Burst\Chronos\Helper\ChronosApi $chronosApi
+        \Burst\Chronos\Helper\ChronosApi $chronosApi,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig  
     ) {
         $this->chronosApi = $chronosApi;
         $this->_objectManager = $objectManager;
         $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
         $this->chronos_enabled_product_sync = $this->scopeConfig->getValue( 
             'chronos/chronos_entities/chronos_synchronize_products', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE 
         );
+        
     }
     /**
      * customer register event handler
@@ -34,7 +37,7 @@ class ProductSaveEntityAfter implements ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if ($this->chronosApi->token != false) {
+	    if ($this->chronosApi->token != false) {
             if ($this->chronos_enabled_product_sync  != false) {
                 try {
                     $product= $observer->getProduct();
@@ -60,7 +63,7 @@ class ProductSaveEntityAfter implements ObserverInterface
                         'json_data'=>$json_data,
                         ];
                     $final_json_data= \json_encode($data,true);
-                    // $this->chronosApi->createOrUpdateProduct($external_id, $final_json_data);
+                    $this->chronosApi->createOrUpdateProduct($external_id, $final_json_data);
                 } catch (exception $e) {
                     $this->logger->addInfo('Chronos ProductSaveEntityAfter Main', ["Error"=>$e->getMessage()]);
                 }
