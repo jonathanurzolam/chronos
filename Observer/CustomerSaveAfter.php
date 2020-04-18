@@ -43,8 +43,9 @@ class CustomerSaveAfter implements ObserverInterface
                     $customer = $event->getCustomer();
                     $external_id = $customer->getId();
                     $email = $customer->getEmail();
-                    $firstname = $customer->getFirstName();
-                    $lastname = $customer->getLastName();
+                    $firstname = $customer->getFirstname();
+                    $lastname = $customer->getLastname();
+                    $document_number = $customer->getData('cedula');
                     $company= 1;
                     $source= 1;
                     $json_data =json_encode($customer->getData());
@@ -55,6 +56,7 @@ class CustomerSaveAfter implements ObserverInterface
                         "lastname"=> $lastname,
                         'company'=>$company,
                         'source'=>$source,
+                        // 'document_number'=>(int)$document_number,
                         'json_data'=>$json_data,
                     ];
                     $final_json_data= \json_encode($data,true);

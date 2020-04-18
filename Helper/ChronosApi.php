@@ -45,7 +45,6 @@ class ChronosApi extends AbstractHelper{
         if ($this->chronos_enabled) {
             if ($this->chronos_url !=null && $this->chronos_user != null && $this->chronos_password!=null) {
                 $this->token = $this->getoken();
-                $this->logger->addInfo('Chronos  Main', ["enable yes"=>'******************************']);
             }
             else{
                 $this->token = false;
@@ -53,7 +52,6 @@ class ChronosApi extends AbstractHelper{
         } else{
             $this->token = false;
         }
-        // $this->token = $this->getoken();
     }
     /**
      * Function to generate token in Chronos
@@ -100,9 +98,7 @@ class ChronosApi extends AbstractHelper{
      */
     public function createOrUpdateProduct($product_id, $json_data)
     {
-	$this->logger->addInfo('Chronos Product save helper', ["Status"=>'Start']);
-        if ($this->token!= false) {
-            $product = $this->getProductById($product_id);
+	        $product = $this->getProductById($product_id);
             if (property_exists($product,'detail')) {
                 # To create
                 $product_data = $this->createProduct($json_data);
@@ -110,9 +106,6 @@ class ChronosApi extends AbstractHelper{
                 # To update
                 $product_data = $this->updateProduct($product_id,$json_data);
             }
-        } else {
-            $this->logger->addInfo('Chronos Product save helper', ["Token error"=>'No token']);
-        }
     }
     /**
      * This function search a product by specifc external_id
@@ -212,18 +205,13 @@ class ChronosApi extends AbstractHelper{
      */
     public function createOrUpdateCustomer($customer_id, $json_data)
     {
-        if ($this->token!= false) {
-           
-            $customer = $this->getCustomerById($customer_id);
-            if (property_exists($customer,'detail')) {
-                # To create
-                $customer_data = $this->createCustomer($json_data);
-            } else {
-                # To update
-                $customer_data = $this->updateCustomer($customer_id,$json_data);
-            }
+        $customer = $this->getCustomerById($customer_id);
+        if (property_exists($customer,'detail')) {
+            # To create
+            $customer_data = $this->createCustomer($json_data);
         } else {
-            $this->logger->addInfo('Chronos customer save helper', ["Token error"=>'No token']);
+            # To update
+            $customer_data = $this->updateCustomer($customer_id,$json_data);
         }
     }
     /**
@@ -324,28 +312,23 @@ class ChronosApi extends AbstractHelper{
      */
     public function createOrUpdateOrder($order_id, $json_data, $products)
     {
-        if ($this->token!= false) {
-           
-            $order = $this->getOrderById($order_id);
-            if (property_exists($order,'detail')) {
-                # To create
-                $order_data = $this->createOrder($json_data);
-                $x=0;
-                foreach ($products as $product) {
-                    $chronos_product = $this->getProductById($product['product_id']);
-                    unset($product['product_id']);
-                    $product['order']=$order_data->id;
-                    $product['product']=$chronos_product->id;
-                    $json_data_order_product=json_encode($product);
-                    $this->createOrderProduct($json_data_order_product);
-                    
-                }
-            } else {
-                # To update
-                $order_data = $this->updateOrder($order_id,$json_data);
+        $order = $this->getOrderById($order_id);
+        if (property_exists($order,'detail')) {
+            # To create
+            $order_data = $this->createOrder($json_data);
+            $x=0;
+            foreach ($products as $product) {
+                $chronos_product = $this->getProductById($product['product_id']);
+                unset($product['product_id']);
+                $product['order']=$order_data->id;
+                $product['product']=$chronos_product->id;
+                $json_data_order_product=json_encode($product);
+                $this->createOrderProduct($json_data_order_product);
+                
             }
         } else {
-            $this->logger->addInfo('Chronos order save helper', ["Token error"=>'No token']);
+            # To update
+            $order_data = $this->updateOrder($order_id,$json_data);
         }
     }
     /**
